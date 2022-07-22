@@ -24,9 +24,13 @@ def str_lrc_to_srt(in_str, min_app_time= 1.0, spe_time = 0.05):
         text = re.search(nw[1]+r'(.*)', in_str, flags=re.M)
         str_time = nw[0]
         end_time = max(timeline[i+1][0]-spe_time, str_time + min_app_time)
-        res = res + str(cnt) + '\n' + floattime2strtime(str_time) + ' --> ' + floattime2strtime(end_time) + '\n'
-        res = res + text.group(1) + '\n\n'
-        cnt = cnt + 1
+        if (text is not None) and (re.search(r'\S', text.group(1)) is not None):
+            res = res + str(cnt) + '\n' + floattime2strtime(str_time) + ' --> ' + floattime2strtime(end_time) + '\n'
+            res = res + text.group(1) + '\n\n'
+            cnt = cnt + 1
+            in_str = re.sub(nw[1] + text.group(1), "", in_str, count = 1)
+        else:
+            in_str = re.sub(nw[1], "", in_str, count = 1)
 
     return res
 
